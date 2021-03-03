@@ -15,9 +15,9 @@ public class LocationGraph<E>
 	}
 	
 	// constructor for adding vertices
-	public void addVertex(E info, Integer xlocation, Integer ylocaiton)
+	public void addVertex(E info, Integer xlocation, Integer ylocation)
 	{
-		vertices.put(info, new Vertex(info, xlocation, ylocaiton));
+		vertices.put(info, new Vertex(info, xlocation, ylocation));
 	}
 	
 	// connecting vertices with edges
@@ -56,7 +56,7 @@ public class LocationGraph<E>
 	}
 	
 	// constructor of vertices
-	private class Vertex 
+	public class Vertex 
 	{
 		E info;
 		Integer xlocation;
