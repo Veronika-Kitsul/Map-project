@@ -61,20 +61,18 @@ public class Map
 		} 
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
+			System.out.println("Sorry, the background is not in this folder or is not named correclty");
 			e.printStackTrace();
 		}
 		
 		
 		drawing.addMouseListener(new MouseListener()
 		{
-			@Override
 			public void mouseClicked(MouseEvent e) 
 			{
 				
 			}
 
-			
 			public void mousePressed(MouseEvent e) 
 			{
 				for (Vertex<String> v : graph.vertices.values())
@@ -91,35 +89,32 @@ public class Map
 						previous = null;
 						return;
 					}
-				String vertex = JOptionPane.showInputDialog("Label the place you are trying to add: ");
-				
-				if (v.info == (null))
-				{
-					System.out.println("You tried to enter an empty vertex");
-				}
-				else 
-				{
-					graph.addVertex(vertex, e.getX(), e.getY());
-				}
-				
-				previous = null;
-				frame.getContentPane().repaint();
-				}
+				}	
+					String vertex = JOptionPane.showInputDialog("Label the place you are trying to add: ");
+					
+					if (vertex == (null))
+					{
+						System.out.println("You tried to enter an empty vertex");
+					}
+					else 
+					{
+						graph.addVertex(vertex, e.getX(), e.getY());
+					}
+					
+					previous = null;
+					frame.getContentPane().repaint();
 			}
 
-			@Override
 			public void mouseReleased(MouseEvent e) 
 			{
 				
 			}
 
-			@Override
 			public void mouseEntered(MouseEvent e) 
 			{
 				
 			}
 
-			@Override
 			public void mouseExited(MouseEvent e) 
 			{
 				// TODO Auto-generated method stub
@@ -157,7 +152,7 @@ public class Map
 			}
 		});
 		
-		
+	// I DON'T KNOW WHY THIS DOES NOT WORK --------------------------------------------------------------------------
 		JButton latest = new JButton("Load latest saved map");
 		buttons.add(latest);
 		latest.addActionListener(new ActionListener() 
@@ -175,22 +170,25 @@ public class Map
 								graph.addVertex(array[0], Integer.parseInt(array[1]), Integer.parseInt(array[2]));
 								frame.getContentPane().repaint();
 								k++;
-							}
-							
-							BufferedReader reader2 = new BufferedReader(new FileReader(data));
-							int f = 0;
-							for (String line = reader2.readLine(); line != null; line = reader.readLine())
-							{
-								String[] array = line.split("~");
-								f++;
-								for (Vertex<String> v : graph.vertices.values())
+								
+								
+								BufferedReader reader2 = new BufferedReader(new FileReader(data));
+								int f = 0;
+								for (String line2 = reader2.readLine(); line2 != null; line2 = reader.readLine())
 								{
-									for (int i = 3; i < array.length; i++)
+									String[] array2 = line.split("~");
+									f++;
+									for (Vertex<String> v : graph.vertices.values())
 									{
-										if (!array[i].equals(""))
+										for (int i = 3; i < array2.length; i++)
 										{
-											graph.connect(array[0], array[i]);
-											frame.getContentPane().repaint();
+											if (!array2[i].equals(""))
+											{
+					// gives null pointer exception on this one
+												graph.connect(array2[0], array2[i]);
+												System.out.println(array2[0]);
+												frame.getContentPane().repaint();
+											}
 										}
 									}
 								}
