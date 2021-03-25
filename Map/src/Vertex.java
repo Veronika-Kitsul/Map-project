@@ -7,14 +7,14 @@ import java.util.HashSet;
 		E info;
 		Integer xlocation;
 		Integer ylocation;
-		HashSet<LocationGraph<E>.Edge> edges;
+		HashSet<LocationGraph<E>.Edge<Double>> edges;
 		
 		public Vertex(E info, Integer xlocation, Integer ylocation)
 		{
 			this.info = info;
 			this.xlocation = xlocation;
 			this.ylocation = ylocation;
-			edges = new HashSet<LocationGraph<E>.Edge>();
+			edges = new HashSet<LocationGraph<E>.Edge<Double>>();
 		}
 		
 		public boolean equals(Vertex<E> other)

@@ -26,16 +26,16 @@ public class LocationGraph<E>
 		Vertex<E> v1 = vertices.get(info1);
 		Vertex<E> v2 = vertices.get(info2);
 		
-		Edge e = new Edge(v1, v2);
+		Edge<Double> e = new Edge<Double>(v1, v2);
 		
 		v1.edges.add(e);
 		v2.edges.add(e);
 	}
 	
 	// constructor of labeled edges
-	public class Edge
+	public class Edge<Double>
 	{
-		Double label;
+		double label;
 		Vertex<E> v1, v2;
 		
 		public Edge(Vertex<E> v1, Vertex<E> v2)
@@ -55,30 +55,9 @@ public class LocationGraph<E>
 		}
 	}
 	
-	/* constructor of vertices
-	public class Vertex 
-	{
-		E info;
-		Integer xlocation;
-		Integer ylocation;
-		HashSet<Edge> edges;
-		
-		public Vertex(E info, Integer xlocation, Integer ylocation)
-		{
-			this.info = info;
-			this.xlocation = xlocation;
-			this.ylocation = ylocation;
-			edges = new HashSet<Edge>();
-		}
-		
-		public boolean equals(Vertex other)
-		{
-			return info.equals(other.info);
-		}
-	}*/
 	
 	// Dijkstra's Algorithm
-	public ArrayList<Object> search(E place, E destiny)
+	public ArrayList<Vertex<E>> search(E place, E destiny)
 	
 	{
 		// handle null pointers and give details as to what went wrong
@@ -102,10 +81,10 @@ public class LocationGraph<E>
 		visited.add(vertices.get(place));
 		
 		// create a map to remember which vertex leads to which vertex
-		HashMap<Vertex<E>, Edge> leadsTo = new HashMap<Vertex<E>, Edge>();
+		HashMap<Vertex<E>, Edge<Double>> leadsTo = new HashMap<Vertex<E>, Edge<Double>>();
 		
 		// hash map of distances
-		HashMap<Vertex, Double> distances = new HashMap<Vertex, Double>();
+		HashMap<Vertex<E>, Double> distances = new HashMap<Vertex<E>, Double>();
 		
 		for (Vertex<E> v: vertices.values())
 		{
@@ -123,11 +102,11 @@ public class LocationGraph<E>
 			
 			if (curr.info == destiny)
 			{
-				backTrace(curr, leadsTo);
+				return backTrace(curr, leadsTo);
 			}
 			
 			// for all of the edges to the current vertex
-			for (Edge e: curr.edges)
+			for (Edge<Double> e: curr.edges)
 			{
 				Vertex<E> neighbor = e.getNeighbor(curr);
 				
@@ -151,23 +130,22 @@ public class LocationGraph<E>
 	}
 	
 	// back trace method
-	private ArrayList<Object> backTrace(Vertex<E> destiny, HashMap<Vertex<E>, Edge> leadsTo)
+	private ArrayList<Vertex<E>> backTrace(Vertex<E> destiny, HashMap<Vertex<E>, Edge<Double>> leadsTo)
 	{
 		// start at the final position
 		Vertex<E> curr = destiny;
 		// array list to hold the path
-		ArrayList<Object> path = new ArrayList<Object>();
+		ArrayList<Vertex<E>> path = new ArrayList<Vertex<E>>();
 		
 		// while there is a vertex to lead us to another vertex
 		while (leadsTo.get(curr) != null) 
 		{
 			// add it to the path
-			path.add(0, curr.info);
-			path.add(0, leadsTo.get(curr).label);
+			path.add(0, curr);
 			curr = leadsTo.get(curr).getNeighbor(curr);
 		}
-		path.add(0, curr.info);
-		System.out.println(path);
+		path.add(0, curr);
+		System.out.println("this path: " + path);
 		return path;
 	}
 	
@@ -175,18 +153,5 @@ public class LocationGraph<E>
 	public static void main(String[] args)
 	{
 		LocationGraph<String> g = new LocationGraph<String>();
-		g.addVertex("A", 1, 1);
-		g.addVertex("B", 3, 8);
-		g.addVertex("C", 5, 1);
-		g.addVertex("D", 2, -2);
-		g.addVertex("E", 3, 0);
-		
-		g.connect("A", "B");
-		g.connect("C", "B");
-		g.connect("A", "D");
-		g.connect("D", "E");
-		g.connect("C", "E");
-		
-		g.search("A", "C");
 	}
 }

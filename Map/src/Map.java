@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,8 +26,20 @@ import javax.swing.JPanel;
 
 public class Map
 {
+	///////////////////////////////////////
+	////// wrong
+	///// algorithm
+	////// for
+	///// the 
+	////// graph
+	
+	
+	
+	
+	
 	File data = new File("graph_data.txt");
 	final double RADIUS = 15.0 / 2;
+	ArrayList<Vertex<String>> path;
 	JFrame frame = new JFrame();
 	JPanel panel = new JPanel();
 	JPanel buttons = new JPanel();
@@ -35,9 +49,9 @@ public class Map
 				{
 					g.drawImage(image, 0, 0, null);
 			
-					g.setColor(Color.black);
 					for (Vertex<String> v : graph.vertices.values())
 					{
+						g.setColor(Color.black);
 						g.fillOval(v.xlocation, v.ylocation, 15, 15);
 						g.drawString(v.info, v.xlocation - 15, v.ylocation + 25);
 
@@ -45,6 +59,22 @@ public class Map
 						{
 							g.drawLine(v.xlocation + (int) RADIUS, v.ylocation + (int) RADIUS, e.getNeighbor(v).xlocation +  (int) RADIUS, e.getNeighbor(v).ylocation +  (int) RADIUS);
 						}
+						
+						if (path != null)
+						{
+							for (int i = 0; i < path.size() - 1; i++)
+							{
+								g.setColor(Color.red);
+								g.drawLine(path.get(i).xlocation + (int) RADIUS, path.get(i).ylocation + (int) RADIUS, path.get(i + 1).xlocation +  (int) RADIUS, path.get(i + 1).ylocation +  (int) RADIUS);
+							}
+							
+							for (int i = 0; i < path.size(); i++)
+							{
+								g.setColor(Color.red);
+								g.fillOval(path.get(i).xlocation, path.get(i).ylocation, 15, 15);
+							}
+						}
+						
 					}
 				}
 			};
@@ -77,6 +107,7 @@ public class Map
 			{
 				for (Vertex<String> v : graph.vertices.values())
 				{
+					// if the user clicks on two vertices in a row
 					if (Math.sqrt(Math.pow(e.getX() - (v.xlocation + RADIUS), 2) + Math.pow(e.getY() - (v.ylocation + RADIUS), 2)) <= RADIUS && previous == null)
 					{
 						previous = v;
@@ -84,25 +115,36 @@ public class Map
 					}
 					else if (Math.sqrt(Math.pow(e.getX() - (v.xlocation + RADIUS), 2) + Math.pow(e.getY() - (v.ylocation + RADIUS), 2)) <= RADIUS && previous != null)
 					{
+						for (LocationGraph.Edge edge : v.edges)
+						{
+							if (edge.v2.info == previous.info || edge.v1.info == previous.info)
+							{
+								path = graph.search(v.info, previous.info);	
+								frame.getContentPane().repaint();
+								previous = null;
+								return;
+							}
+						}
 						graph.connect(v.info, previous.info);
-						frame.getContentPane().repaint();
 						previous = null;
+						frame.getContentPane().repaint();
 						return;
 					}
 				}	
-					String vertex = JOptionPane.showInputDialog("Label the place you are trying to add: ");
-					
-					if (vertex == (null))
-					{
-						System.out.println("You tried to enter an empty vertex");
-					}
-					else 
-					{
-						graph.addVertex(vertex, e.getX(), e.getY());
-					}
-					
-					previous = null;
-					frame.getContentPane().repaint();
+				
+				String vertex = JOptionPane.showInputDialog("Label the place you are trying to add: ");
+				
+				if (vertex == (null))
+				{
+					System.out.println("You tried to enter an empty vertex");
+				}
+				else 
+				{
+					graph.addVertex(vertex, e.getX(), e.getY());
+				}
+				
+				previous = null;
+				frame.getContentPane().repaint();
 			}
 
 			public void mouseReleased(MouseEvent e) 
@@ -136,7 +178,7 @@ public class Map
 					{
 						writer.write(v.info + "~" + v.xlocation + "~" + v.ylocation + "~");
 						
-						for (LocationGraph<String>.Edge ed : v.edges)
+						for (LocationGraph<String>.Edge<Double> ed : v.edges)
 						{
 							writer.write(ed.getNeighbor(v).info + "~");
 						}
@@ -151,8 +193,8 @@ public class Map
 				}
 			}
 		});
+
 		
-	// I DON'T KNOW WHY THIS DOES NOT WORK --------------------------------------------------------------------------
 		JButton latest = new JButton("Load latest saved map");
 		buttons.add(latest);
 		latest.addActionListener(new ActionListener() 
@@ -162,7 +204,7 @@ public class Map
 						try 
 						{
 							BufferedReader reader = new BufferedReader(new FileReader(data));
-							LocationGraph<String> graph = new LocationGraph<String>();
+							graph = new LocationGraph<String>();
 							int k = 0;
 							for (String line = reader.readLine(); line != null; line = reader.readLine())
 							{
@@ -170,33 +212,26 @@ public class Map
 								graph.addVertex(array[0], Integer.parseInt(array[1]), Integer.parseInt(array[2]));
 								frame.getContentPane().repaint();
 								k++;
-								
-								
-								BufferedReader reader2 = new BufferedReader(new FileReader(data));
-								int f = 0;
-								for (String line2 = reader2.readLine(); line2 != null; line2 = reader.readLine())
+							}
+							reader.close();
+							
+							BufferedReader reader2 = new BufferedReader(new FileReader(data));
+							int f = 0;
+							for (String line2 = reader2.readLine(); line2 != null; line2 = reader2.readLine())
+							{
+								String[] array2 = line2.split("~");
+								f++;
+								for (int i = 3; i < array2.length; i++)
 								{
-									String[] array2 = line.split("~");
-									f++;
-									for (Vertex<String> v : graph.vertices.values())
+									if (!array2[i].equals(""))
 									{
-										for (int i = 3; i < array2.length; i++)
-										{
-											if (!array2[i].equals(""))
-											{
-					// gives null pointer exception on this one
-												graph.connect(array2[0], array2[i]);
-												System.out.println(array2[0]);
-												frame.getContentPane().repaint();
-											}
-										}
+										graph.connect(array2[0], array2[i]);
 									}
 								}
 							}
 							
-							
-							
-							reader.close();
+							reader2.close();
+							frame.getContentPane().repaint();
 							
 						} 
 						catch (FileNotFoundException e1) 
