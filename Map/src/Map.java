@@ -219,6 +219,7 @@ public class Map
 							{
 								JOptionPane message = new JOptionPane();
 								message.showMessageDialog(frame, "You cannot add two places with the same name. Make sure you distinguish them.", "Error", JOptionPane.INFORMATION_MESSAGE);
+								return;
 							}
 							
 							// if all good -- add a vertex
