@@ -21,4 +21,9 @@ import java.util.HashSet;
 		{
 			return info.equals(other.info);
 		}
+		
+		public String toString()
+		{
+			return info.toString();
+		}
 	}

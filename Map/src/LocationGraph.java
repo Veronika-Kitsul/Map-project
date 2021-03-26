@@ -92,15 +92,16 @@ public class LocationGraph<E>
 		}
 		distances.put(vertices.get(place), 0.0);
 		
-		Double distanceToStart = 0.0 ;
+		double distanceToStart = 0.0 ;
 		
 		// while we have nothing to visit == we searched the whole graph
 		while (toVisit.size() != 0)
 		{
 			// we don't need to visit current vertex anymore because we are here, so we pop it 
 			Vertex<E> curr = toVisit.pop();
+			visited.add(curr);
 			
-			if (curr.info == destiny)
+			if (curr.info.equals(destiny))
 			{
 				return backTrace(curr, leadsTo);
 			}
@@ -113,7 +114,7 @@ public class LocationGraph<E>
 				// if you have already visited then just continue
 				if (visited.contains(neighbor)) continue;
 				
-				distanceToStart = distanceToStart + e.label;
+				distanceToStart = distances.get(curr) + e.label;
 				
 				// put the path to the map
 				if (distanceToStart < distances.get(neighbor))
@@ -122,7 +123,6 @@ public class LocationGraph<E>
 					distances.put(neighbor, distanceToStart);
 					toVisit.put(distanceToStart, neighbor);
 				}
-				visited.add(curr);
 			}
 			distanceToStart = 0.0;
 		}
@@ -134,6 +134,7 @@ public class LocationGraph<E>
 	{
 		// start at the final position
 		Vertex<E> curr = destiny;
+		
 		// array list to hold the path
 		ArrayList<Vertex<E>> path = new ArrayList<Vertex<E>>();
 		
@@ -145,7 +146,6 @@ public class LocationGraph<E>
 			curr = leadsTo.get(curr).getNeighbor(curr);
 		}
 		path.add(0, curr);
-		System.out.println("this path: " + path);
 		return path;
 	}
 	
@@ -153,5 +153,36 @@ public class LocationGraph<E>
 	public static void main(String[] args)
 	{
 		LocationGraph<String> g = new LocationGraph<String>();
+		g.addVertex("p", 411, 255);
+		g.addVertex("h", 661, 73);
+		g.addVertex("m", 611, 343);
+		g.addVertex("ki", 755, 367);
+		g.addVertex("",766, 396);
+		g.addVertex("o", 536, 442);
+		g.addVertex("lk", 776, 316);
+		
+		g.connect("p", "o");
+		g.connect("p", "m");
+		
+		g.connect("", "o");
+		g.connect("", "ki");
+		g.connect("", "lk");
+		
+		g.connect("h", "o");
+		g.connect("h", "ki");
+		
+		g.connect("m", "o");
+		g.connect("m", "p");
+		
+		// is it because i did not say that ki is connected to it too?
+		g.connect("ki", "");
+		g.connect("ki", "h");
+		g.connect("ki", "lk");
+		
+		g.connect("o", "h");
+		g.connect("o", "p");
+		g.connect("o", "m");
+		
+		g.connect("ki", "lk");
 	}
 }
